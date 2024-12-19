@@ -1,4 +1,5 @@
 rootProject.name = 'BooksHub'
 include 'core'
 include 'frontend'
+include 'client'
 

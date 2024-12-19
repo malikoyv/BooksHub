@@ -1,0 +1,11 @@
+alter table book_author drop foreign key FKbjqhp85wjv8vpr0beygh6jsgo;
+alter table book_author drop foreign key FKhwgu59n9o80xv75plf9ggj7xn;
+alter table edition drop foreign key FK7q57m1a7u3voirj9k9ncugsdr;
+alter table review drop foreign key FK70yrt09r4r54tcgkrwbeqenbs;
+alter table review drop foreign key FKiyf57dy48lyiftdrf7y87rnxi;
+drop table if exists author;
+drop table if exists book;
+drop table if exists book_author;
+drop table if exists edition;
+drop table if exists review;
+drop table if exists user;
