@@ -38,4 +38,13 @@ public class BooksClientUriBuilderProvider implements IBooksClientUriBuilderProv
                 .pathSegment(workKey + ".json")
                 .toUriString();
     }
+
+    @Override
+    public String buildRatingsUrl(String bookKey) {
+        return builder()
+                .pathSegment("works")
+                .pathSegment(bookKey)
+                .pathSegment("ratings.json")
+                .toUriString();
+    }
 }

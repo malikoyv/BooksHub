@@ -22,7 +22,7 @@ public class ClientApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 		BookPagedResultDto books = bookClient.searchBooks("The Lord of the Rings", 1);
-		books.docs().forEach(book -> System.out.println(book.title()));
+		books.books().forEach(book -> System.out.println(book.title()));
 
 		System.out.println("\nAuthors:");
 		AuthorSearchResponse authors = bookClient.searchAuthors("Tolkien");

@@ -19,16 +19,23 @@ public class Author {
 
     private String name;
 
-    private LocalDate birthday;
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
 
-    private LocalDate deathday;
+    @Column(name = "death_date")
+    private LocalDate deathDate;
 
+    @Column(name = "author_key")
     private String key; // from the API
 
     @ElementCollection
+    @CollectionTable(name = "author_alternate_names", joinColumns = @JoinColumn(name = "author_id"))
+    @Column(name = "alternate_name")
     private List<String> alternateNames = new ArrayList<>();
 
     @ElementCollection
+    @CollectionTable(name = "author_top_subjects", joinColumns = @JoinColumn(name = "author_id"))
+    @Column(name = "top_subject")
     private List<String> topSubjects = new ArrayList<>();
 
     private String topWork;

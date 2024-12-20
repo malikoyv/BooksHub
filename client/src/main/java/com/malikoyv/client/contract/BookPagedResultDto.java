@@ -2,7 +2,12 @@ package com.malikoyv.client.contract;
 
 import java.util.List;
 
-public record BookPagedResultDto(int start,
-                                 int numFound,
-                                 List<BookDto> docs) {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record BookPagedResultDto(
+                        int numFound,
+                        int start,
+                        boolean numFoundExact,
+                        @JsonProperty("docs") List<BookDto> books
+) {
 }

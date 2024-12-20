@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -23,8 +23,11 @@ public class Review {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private Integer rating;
-    private String comment;
+    private String content;
 
-    private LocalDateTime createdAt;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "review_date")
+    private Date reviewDate;
+
+    private int rating;
 }

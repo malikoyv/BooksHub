@@ -10,16 +10,14 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class User {
+public class Subject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
-    private String email;
-    private String password;
+    private String name;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
+    @ManyToMany(mappedBy = "subjects")
+    private List<Book> books = new ArrayList<>();
 }

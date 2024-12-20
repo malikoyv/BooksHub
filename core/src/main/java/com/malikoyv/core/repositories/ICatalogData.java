@@ -6,4 +6,5 @@ public interface ICatalogData {
     IReviewRepository getReviews();
     IUserRepository getUsers();
     IEditionRepository getEditions();
+    ISubjectRepository getSubjects();
 }
