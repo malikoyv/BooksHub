@@ -25,6 +25,8 @@ public class Author {
     @Column(name = "death_date")
     private LocalDate deathDate;
 
+    private String biography;
+
     @Column(name = "author_key")
     private String key; // from the API
 

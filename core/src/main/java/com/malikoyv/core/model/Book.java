@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,11 @@ public class Book {
     private String key;
 
     private String title;
+
+    private LocalDate publishDate;
+    private String description;
+    private int pageCount;
+    private String language;
 
     @ManyToMany
     @JoinTable(
