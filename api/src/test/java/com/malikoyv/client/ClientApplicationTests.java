@@ -1,10 +1,10 @@
-package com.malikoyv.api;
+package com.malikoyv.client;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ApiApplicationTests {
+class ClientApplicationTests {
 
 	@Test
 	void contextLoads() {
