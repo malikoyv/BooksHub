@@ -1,8 +1,8 @@
 package com.malikoyv.api.controllers;
 
-import com.malikoyv.api.contract.AuthorDto;
+import com.malikoyv.client.contract.AuthorDto;
 import com.malikoyv.api.services.AuthorService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +13,7 @@ public class AuthorController {
 
     private final AuthorService authorService;
 
+    @Autowired
     public AuthorController(AuthorService authorService) {
         this.authorService = authorService;
     }
@@ -30,6 +31,11 @@ public class AuthorController {
     @GetMapping
     public List<AuthorDto> getAllAuthors() {
         return authorService.getAllAuthors();
+    }
+
+    @PostMapping("/update")
+    public void updateAuthors() {
+        authorService.updateAuthorsFromOpenLibrary();
     }
 }
 

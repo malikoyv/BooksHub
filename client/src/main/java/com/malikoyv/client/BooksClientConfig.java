@@ -1,10 +1,9 @@
 package com.malikoyv.client;
 
-import com.malikoyv.core.repositories.CatalogData;
-import com.malikoyv.core.repositories.ICatalogData;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class BooksClientConfig {
@@ -14,8 +13,13 @@ public class BooksClientConfig {
     }
 
     @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
     @Scope("prototype")
-    public IBooksClient booksClient(IBooksClientUriBuilderProvider provider){
-        return new BooksClient(provider);
+    public IBooksClient booksClient(IBooksClientUriBuilderProvider provider, RestTemplate restTemplate){
+        return new BooksClient(provider, restTemplate);
     }
 }

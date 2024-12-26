@@ -1,8 +1,9 @@
 package com.malikoyv.api.controllers;
 
-import com.malikoyv.api.contract.BookDto;
+import com.malikoyv.client.contract.BookDto;
 import com.malikoyv.api.services.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public class BookController {
 
     private final BookService bookService;
 
+    @Autowired
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
@@ -40,6 +42,11 @@ public class BookController {
     @DeleteMapping("/{id}")
     public void deleteBook(@PathVariable long id) {
         bookService.deleteBook(id);
+    }
+
+    @PostMapping("/update")
+    public void updateBooks() {
+        bookService.updateBooksFromOpenLibrary();
     }
 }
 

@@ -10,8 +10,8 @@ public class BooksClient implements IBooksClient {
     private final RestTemplate restTemplate;
     private final IBooksClientUriBuilderProvider provider;
 
-    public BooksClient(IBooksClientUriBuilderProvider provider) {
-        this.restTemplate = new RestTemplate();
+    public BooksClient(IBooksClientUriBuilderProvider provider, RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
         this.provider = provider;
     }
 

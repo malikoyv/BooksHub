@@ -1,11 +1,14 @@
 package com.malikoyv.client;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+@Component
 public class BooksClientUriBuilderProvider implements IBooksClientUriBuilderProvider {
-    @Value("${openlibrary.api.host}")
-    private String host;
+//    @Value("${openlibrary.api.host}")
+    private String host = "openlibrary.org";
 
     private UriComponentsBuilder builder(){
         return UriComponentsBuilder.newInstance()
