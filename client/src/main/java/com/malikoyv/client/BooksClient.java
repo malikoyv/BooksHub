@@ -3,7 +3,7 @@ package com.malikoyv.client;
 import com.malikoyv.client.contract.AuthorSearchResponse;
 import com.malikoyv.client.contract.EditionDto;
 import com.malikoyv.client.contract.BookPagedResultDto;
-import com.malikoyv.client.contract.RatingsDto;
+import com.malikoyv.client.contract.RatingDto;
 import org.springframework.web.client.RestTemplate;
 
 public class BooksClient implements IBooksClient {
@@ -34,8 +34,8 @@ public class BooksClient implements IBooksClient {
     }
 
     @Override
-    public RatingsDto getRatings(String bookKey) {
+    public RatingDto getRatings(String bookKey) {
         String url = provider.buildRatingsUrl(bookKey);
-        return restTemplate.getForEntity(url, RatingsDto.class).getBody();
+        return restTemplate.getForEntity(url, RatingDto.class).getBody();
     }
 }

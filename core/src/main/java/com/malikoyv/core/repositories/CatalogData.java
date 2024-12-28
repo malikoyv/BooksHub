@@ -10,14 +10,20 @@ public class CatalogData implements ICatalogData {
     private final IUserRepository userRepository;
     private final IEditionRepository editionRepository;
     private final ISubjectRepository subjectRepository;
+    private final IRatingRepository ratingRepository;
+    private final ICountRepository countRepository;
+    private final ISummaryRepository summaryRepository;
 
-    public CatalogData(IBookRepository bookRepository, IAuthorRepository authorRepository, IReviewRepository reviewRepository, IUserRepository userRepository, IEditionRepository editionRepository, ISubjectRepository subjectRepository) {
+    public CatalogData(IBookRepository bookRepository, IAuthorRepository authorRepository, IReviewRepository reviewRepository, IUserRepository userRepository, IEditionRepository editionRepository, ISubjectRepository subjectRepository, IRatingRepository ratingRepository, ICountRepository countRepository, ISummaryRepository summaryRepository) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.editionRepository = editionRepository;
         this.subjectRepository = subjectRepository;
+        this.ratingRepository = ratingRepository;
+        this.countRepository = countRepository;
+        this.summaryRepository = summaryRepository;
     }
 
 
@@ -49,5 +55,20 @@ public class CatalogData implements ICatalogData {
     @Override
     public ISubjectRepository getSubjects() {
         return subjectRepository;
+    }
+
+    @Override
+    public IRatingRepository getRatings() {
+        return ratingRepository;
+    }
+
+    @Override
+    public ISummaryRepository getSummaries() {
+        return summaryRepository;
+    }
+
+    @Override
+    public ICountRepository getCounts() {
+        return countRepository;
     }
 }

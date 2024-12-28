@@ -21,14 +21,14 @@ public class ClientApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		BookPagedResultDto books = bookClient.searchBooks("The Lord of the Rings", 1);
-		books.books().forEach(book -> System.out.println(book.title()));
-
-		System.out.println("\nAuthors:");
-		AuthorSearchResponse authors = bookClient.searchAuthors("Tolkien");
-		authors.authors().forEach(author -> System.out.println(author.name()));
-
-		EditionDto edition = bookClient.getEditionDetails("OL27448W");
-		System.out.println("Edition Title: " + edition.title());
+//		BookPagedResultDto books = bookClient.searchBooks("The Lord of the Rings", 1);
+//		books.books().forEach(book -> System.out.println(book.title()));
+//
+//		System.out.println("\nAuthors:");
+//		AuthorSearchResponse authors = bookClient.searchAuthors("Tolkien");
+//		authors.authors().forEach(author -> System.out.println(author.name()));
+//
+//		EditionDto edition = bookClient.getEditionDetails("OL27448W");
+//		System.out.println("Edition Title: " + edition.title());
 	}
 }
