@@ -21,7 +21,7 @@ public class BookWebController {
         this.restTemplate = restTemplate;
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public String listBooks(Model model) {
         BookDto[] booksArray = restTemplate.getForObject("http://localhost:8080/api/books", BookDto[].class);
         List<BookDto> books = Arrays.asList(booksArray);

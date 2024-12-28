@@ -33,6 +33,7 @@ public class AuthorService {
         author.setTopWork(dto.topWork());
         author.setWorkCount(dto.workCount());
         author.setBirthDate(LocalDate.parse(dto.birthDate()));
+        author.setDeathDate(LocalDate.parse(dto.deathDate()));
 
         db.getAuthors().save(author);
         return author.getId();
@@ -66,7 +67,7 @@ public class AuthorService {
                 author.getKey(),
                 author.getAlternateNames(),
                 author.getBirthDate().toString(),
-                author.getDeathDate().toString(),
+                author.getDeathDate() != null ? author.getDeathDate().toString() : "N/A",
                 author.getTopSubjects(),
                 author.getTopWork(),
                 author.getWorkCount()

@@ -6,9 +6,39 @@
 </head>
 <body>
 <h1>Create Author</h1>
-<form th:action="@{/templates/authors}" th:object="${author}" method="post">
+<form th:action="@{/authors}" th:object="${author}" method="post">
     <label for="name">Name</label>
-    <input type="text" id="name" th:field="*{name}">
+    <input type="text" id="name" th:field="*{name}" required>
+    <br>
+
+    <label for="key">Key</label>
+    <input type="text" id="key" th:field="*{key}" required>
+    <br>
+
+    <label for="alternateNames">Alternate Names</label>
+    <textarea id="alternateNames" th:field="*{alternateNames}" placeholder="Comma-separated values"></textarea>
+    <br>
+
+    <label for="birthDate">Birth Date</label>
+    <input type="date" id="birthDate" th:field="*{birthDate}">
+    <br>
+
+    <label for="deathDate">Death Date</label>
+    <input type="date" id="deathDate" th:field="*{deathDate}">
+    <br>
+
+    <label for="topSubjects">Top Subjects</label>
+    <textarea id="topSubjects" th:field="*{topSubjects}" placeholder="Comma-separated values"></textarea>
+    <br>
+
+    <label for="topWork">Top Work</label>
+    <input type="text" id="topWork" th:field="*{topWork}">
+    <br>
+
+    <label for="workCount">Work Count</label>
+    <input type="number" id="workCount" th:field="*{workCount}" min="0" required>
+    <br>
+
     <button type="submit">Save</button>
 </form>
 <a href="/authors">Back to Authors</a>

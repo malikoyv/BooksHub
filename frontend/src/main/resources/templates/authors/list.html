@@ -17,10 +17,13 @@
     </thead>
     <tbody>
     <tr th:each="author : ${authors}">
-        <td th:text="${author.id}"></td>
         <td th:text="${author.name}"></td>
+        <td th:text="${author.topWork()}"></td>
+        <td th:text="${author.workCount()}"></td>
+        <td th:text="${author.birthDate()}"></td>
+        <td th:text="${author.deathDate()}"></td>
         <td>
-            <a th:href="@{/authors/{id}/update(id=${author.id})}">Update</a>
+            <a th:href="@{/authors/{name}/update(id=${author.name()})}">Update</a>
         </td>
     </tr>
     </tbody>
