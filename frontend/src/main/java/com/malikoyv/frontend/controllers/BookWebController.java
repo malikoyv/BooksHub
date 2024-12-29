@@ -1,5 +1,6 @@
 package com.malikoyv.frontend.controllers;
 
+import com.malikoyv.client.contract.AuthorDto;
 import com.malikoyv.client.contract.BookDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,26 +32,36 @@ public class BookWebController {
 
     @GetMapping("/create")
     public String createBookForm(Model model) {
+        AuthorDto[] authorsArray = restTemplate.getForObject("http://localhost:8080/api/authors", AuthorDto[].class);
+        List<AuthorDto> authors = Arrays.asList(authorsArray);
+
         model.addAttribute("book", new BookDto("", "", List.of(), "", List.of("")));
+        model.addAttribute("allAuthors", authors);
+        model.addAttribute("action", "create");
         return "books/create";
+    }
+
+    @GetMapping("/{key}/update")
+    public String updateBookForm(@PathVariable String key, Model model) {
+        BookDto book = restTemplate.getForObject("http://localhost:8080/api/books/" + key, BookDto.class);
+        AuthorDto[] authorsArray = restTemplate.getForObject("http://localhost:8080/api/authors", AuthorDto[].class);
+        List<AuthorDto> authors = Arrays.asList(authorsArray);
+
+        model.addAttribute("book", book);
+        model.addAttribute("allAuthors", authors);
+        model.addAttribute("action", "update");
+        return "books/update";
     }
 
     @PostMapping
     public String createBook(@ModelAttribute BookDto book) {
-        restTemplate.postForObject("/api/books", book, Long.class);
+        restTemplate.postForObject("http://localhost:8080/api/books", book, Long.class);
         return "redirect:/books";
     }
 
-    @GetMapping("/{id}/update")
-    public String updateBookForm(@PathVariable long id, Model model) {
-        BookDto book = restTemplate.getForObject("/api/books/" + id, BookDto.class);
-        model.addAttribute("book", book);
-        return "books/update";
-    }
-
-    @PostMapping("/{id}")
-    public String updateBook(@PathVariable long id, @ModelAttribute BookDto book) {
-        restTemplate.put("/api/books/" + id, book);
+    @PutMapping("/{key}")
+    public String updateBook(@PathVariable String key, @ModelAttribute BookDto book) {
+        restTemplate.put("http://localhost:8080/api/books/" + key, book);
         return "redirect:/books";
     }
 }

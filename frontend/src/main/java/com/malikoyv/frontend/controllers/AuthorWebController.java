@@ -49,16 +49,22 @@ public class AuthorWebController {
         return "redirect:/authors";
     }
 
-    @GetMapping("/{id}/update")
-    public String updateAuthorForm(@PathVariable long id, Model model) {
-        AuthorDto author = restTemplate.getForObject("http://localhost:8080/api/authors/" + id, AuthorDto.class);
+    @GetMapping("/{key}/update")
+    public String updateAuthorForm(@PathVariable String key, Model model) {
+        AuthorDto author = restTemplate.getForObject("http://localhost:8080/api/authors/" + key, AuthorDto.class);
         model.addAttribute("author", author);
         return "authors/update";
     }
 
-    @PostMapping("/{id}")
-    public String updateAuthor(@PathVariable long id, @ModelAttribute AuthorDto author) {
-        restTemplate.put("http://localhost:8080/api/authors/" + id, author);
+    @PutMapping("/{key}")
+    public String updateAuthor(@PathVariable String key, @ModelAttribute AuthorDto author) {
+        restTemplate.put("http://localhost:8080/api/authors/" + key, author);
+        return "redirect:/authors";
+    }
+
+    @GetMapping("/fetch/{query}")
+    public String fetchAuthors(@PathVariable String query, Model model) {
+        restTemplate.postForObject("http://localhost:8080/api/authors/fetch/" + query, null, Void.class);
         return "redirect:/authors";
     }
 }

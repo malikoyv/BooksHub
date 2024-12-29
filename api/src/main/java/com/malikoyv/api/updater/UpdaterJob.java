@@ -6,11 +6,14 @@ import com.malikoyv.api.services.RatingService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.Random;
+
 @Component
 public class UpdaterJob implements IUpdaterJob {
     private final AuthorService authorService;
     private final BookService bookService;
     private final RatingService ratingService;
+    private final Random r = new Random();
 
     public UpdaterJob(AuthorService authorService, BookService bookService, RatingService ratingService) {
         this.authorService = authorService;
@@ -21,14 +24,15 @@ public class UpdaterJob implements IUpdaterJob {
     @Scheduled(cron = "0 0 * * * ?") // Run every hour
     public void updateAuthors() {
         System.out.println("Updating authors from Open Library...");
-        authorService.updateAuthorsFromOpenLibrary();
+
+        authorService.updateAuthorsFromOpenLibrary(String.valueOf((char)(r.nextInt(26) + 'a')));
         System.out.println("Authors update completed.");
     }
 
     @Scheduled(cron = "0 30 * * * ?") // Run every hour at 30 minutes
     public void updateBooks() {
         System.out.println("Updating books from Open Library...");
-        bookService.updateBooksFromOpenLibrary();
+        bookService.updateBooksFromOpenLibrary(String.valueOf((char)(r.nextInt(26) + 'a')));
         System.out.println("Books update completed.");
     }
 

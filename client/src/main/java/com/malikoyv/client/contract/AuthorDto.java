@@ -12,6 +12,6 @@ public record AuthorDto(
         @JsonProperty("death_date") String deathDate,
         @JsonProperty("top_subjects") List<String> topSubjects,
         @JsonProperty("top_work") String topWork,
-        @JsonProperty("work_count") int workCount
+        @JsonProperty("work_count") Integer workCount
 ) {
 }

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Update Author</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<h1>Update Author</h1>
+<form th:action="@{/authors/{key}(key=${author.key})}" th:object="${author}" method="post">
+    <input type="hidden" name="_method" value="PUT">
+    <input type="hidden" th:field="*{key}">
+    <label for="name">Name</label>
+    <input type="text" id="name" th:field="*{name}" required>
+    <br>
+    <label for="alternateNames">Alternate Names</label>
+    <textarea id="alternateNames" th:field="*{alternateNames}"></textarea>
+    <br>
+    <label for="birthDate">Birth Date</label>
+    <input type="date" id="birthDate" th:field="*{birthDate}">
+    <br>
+    <label for="deathDate">Death Date</label>
+    <input type="date" id="deathDate" th:field="*{deathDate}">
+    <br>
+    <label for="topSubjects">Top Subjects</label>
+    <textarea id="topSubjects" th:field="*{topSubjects}"></textarea>
+    <br>
+    <label for="topWork">Top Work</label>
+    <input type="text" id="topWork" th:field="*{topWork}">
+    <br>
+    <label for="workCount">Work Count</label>
+    <input type="number" id="workCount" th:field="*{workCount}">
+    <br>
+    <button type="submit">Save</button>
+</form>
+<a href="/authors">Back to Authors</a>
+</body>
+</html>

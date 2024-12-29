@@ -36,8 +36,8 @@ public class BookService {
         return bookEntity.getId();
     }
 
-    public BookDto getBook(long id) {
-        var book = db.getBooks().findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
+    public BookDto getBook(String key) {
+        var book = db.getBooks().findByKey(key);
         return toDto(book);
     }
 
@@ -45,8 +45,8 @@ public class BookService {
         return db.getBooks().findAll().stream().map(this::toDto).collect(Collectors.toList());
     }
 
-    public void updateBook(long id, BookDto dto) {
-        var book = db.getBooks().findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
+    public void updateBook(String key, BookDto dto) {
+        var book = db.getBooks().findByKey(key);
         book.setTitle(dto.title());
         book.setPublishDate(LocalDate.parse(dto.firstPublishDate()));
         book.setKey(dto.key());
@@ -54,12 +54,12 @@ public class BookService {
         db.getBooks().save(book);
     }
 
-    public void deleteBook(long id) {
-        db.getBooks().deleteById(id);
+    public void deleteBook(String key) {
+        db.getBooks().deleteByKey(key);
     }
 
-    public void updateBooksFromOpenLibrary() {
-        BookPagedResultDto response = booksClient.searchBooks("j", 1);
+    public void updateBooksFromOpenLibrary(String query) {
+        BookPagedResultDto response = booksClient.searchBooks(query, 1);
 
         if (response != null && response.books() != null) {
             List<BookDto> books = response.books();
@@ -72,11 +72,12 @@ public class BookService {
     }
 
     private BookDto toDto(Book book) {
+        String publishDateStr = book.getPublishDate() != null ? book.getPublishDate().toString() : "Unknown";
         return new BookDto(
                 book.getKey(),
                 book.getTitle(),
                 book.getAuthors().stream().map(Author::getName).collect(Collectors.toList()),
-                book.getPublishDate().toString(),
+                publishDateStr,
                 book.getSubjects().stream().map(Subject::toString).collect(Collectors.toList())
         );
     }

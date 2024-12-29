@@ -3,27 +3,46 @@
 <head>
     <title>Authors</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script>
+        function fetchAuthors() {
+            const query = document.getElementById('fetch').value;
+            if (query.trim() !== "") {
+                window.location.href = `/authors/fetch/${query}`;
+            } else {
+                alert('Please enter a name or query to fetch authors.');
+            }
+        }
+    </script>
 </head>
 <body>
 <h1>Authors</h1>
 <a href="/authors/create">Create New Author</a>
+
+<div>
+    <input type="text" id="fetch" placeholder="Enter name to fetch authors">
+    <button onclick="fetchAuthors()">Fetch</button>
+</div>
+
 <table>
     <thead>
     <tr>
-        <th>ID</th>
         <th>Name</th>
+        <th>Top Work</th>
+        <th>Work Count</th>
+        <th>Birth Date</th>
+        <th>Death Date</th>
         <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="author : ${authors}">
         <td th:text="${author.name}"></td>
-        <td th:text="${author.topWork()}"></td>
-        <td th:text="${author.workCount()}"></td>
-        <td th:text="${author.birthDate()}"></td>
-        <td th:text="${author.deathDate()}"></td>
+        <td th:text="${author.topWork}"></td>
+        <td th:text="${author.workCount}"></td>
+        <td th:text="${author.birthDate}"></td>
+        <td th:text="${author.deathDate}"></td>
         <td>
-            <a th:href="@{/authors/{name}/update(id=${author.name()})}">Update</a>
+            <a th:href="@{/authors/{key}/update(key=${author.key})}">Update</a>
         </td>
     </tr>
     </tbody>

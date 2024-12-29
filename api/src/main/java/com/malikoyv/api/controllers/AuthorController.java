@@ -23,9 +23,9 @@ public class AuthorController {
         return authorService.saveAuthor(dto);
     }
 
-    @GetMapping("/{id}")
-    public AuthorDto getAuthor(@PathVariable long id) {
-        return authorService.getAuthor(id);
+    @GetMapping("/{key}")
+    public AuthorDto getAuthor(@PathVariable String key) {
+        return authorService.getAuthor(key);
     }
 
     @GetMapping
@@ -33,9 +33,14 @@ public class AuthorController {
         return authorService.getAllAuthors();
     }
 
-    @PostMapping("/update")
-    public void updateAuthors() {
-        authorService.updateAuthorsFromOpenLibrary();
+    @PutMapping("/{key}")
+    public void updateAuthor(@PathVariable String key, @RequestBody AuthorDto dto) {
+        authorService.updateAuthor(key, dto);
+    }
+
+    @PostMapping("/fetch/{query}")
+    public void fetchAuthors(@PathVariable String query) {
+        authorService.updateAuthorsFromOpenLibrary(query);
     }
 }
 

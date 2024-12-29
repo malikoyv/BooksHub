@@ -24,9 +24,9 @@ public class BookController {
         return bookService.saveBook(dto);
     }
 
-    @GetMapping("/{id}")
-    public BookDto getBook(@PathVariable long id) {
-        return bookService.getBook(id);
+    @GetMapping("/{key}")
+    public BookDto getBook(@PathVariable String key) {
+        return bookService.getBook(key);
     }
 
     @GetMapping
@@ -34,19 +34,18 @@ public class BookController {
         return bookService.getAllBooks();
     }
 
-    @PutMapping("/{id}")
-    public void updateBook(@PathVariable long id, @RequestBody BookDto dto) {
-        bookService.updateBook(id, dto);
+    @PutMapping("/{key}")
+    public void updateBook(@PathVariable String key, @RequestBody BookDto dto) {
+        bookService.updateBook(key, dto);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteBook(@PathVariable long id) {
-        bookService.deleteBook(id);
+    @DeleteMapping("/{key}")
+    public void deleteBook(@PathVariable String key) {
+        bookService.deleteBook(key);
     }
 
-    @PostMapping("/update")
-    public void updateBooks() {
-        bookService.updateBooksFromOpenLibrary();
+    @PostMapping("/fetch/{key}")
+    public void updateBooks(@PathVariable String key) {
+        bookService.updateBooksFromOpenLibrary(key);
     }
 }
-

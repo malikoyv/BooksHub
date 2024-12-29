@@ -6,6 +6,7 @@ import com.malikoyv.client.mappers.AuthorMapper;
 import com.malikoyv.core.model.Author;
 import com.malikoyv.client.contract.AuthorDto;
 import com.malikoyv.core.repositories.ICatalogData;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,21 +27,14 @@ public class AuthorService {
 
     public long saveAuthor(AuthorDto dto) {
         var author = new Author();
-        author.setName(dto.name());
-        author.setKey(dto.key());
-        author.setAlternateNames(dto.alternateNames());
-        author.setTopSubjects(dto.topSubjects());
-        author.setTopWork(dto.topWork());
-        author.setWorkCount(dto.workCount());
-        author.setBirthDate(LocalDate.parse(dto.birthDate()));
-        author.setDeathDate(LocalDate.parse(dto.deathDate()));
-
-        db.getAuthors().save(author);
+        setAllFieldsAndSave(author, dto);
         return author.getId();
     }
 
-    public AuthorDto getAuthor(long id) {
-        var author = db.getAuthors().findById(id).orElseThrow(() -> new RuntimeException("Author not found"));
+    public AuthorDto getAuthor(String key) {
+        Author author = db.getAuthors().findByKey(key)
+                .orElseThrow(() -> new EntityNotFoundException("Author not found with key: " + key));
+
         return toDto(author);
     }
 
@@ -48,8 +42,13 @@ public class AuthorService {
         return db.getAuthors().findAll().stream().map(this::toDto).collect(Collectors.toList());
     }
 
-    public void updateAuthorsFromOpenLibrary() {
-        AuthorSearchResponse response = booksClient.searchAuthors("j");
+    public void updateAuthor(String key, AuthorDto dto){
+        var author = db.getAuthors().findByKey(key).orElseThrow(() -> new RuntimeException("Author not found"));
+        setAllFieldsAndSave(author, dto);
+    }
+
+    public void updateAuthorsFromOpenLibrary(String query) {
+        AuthorSearchResponse response = booksClient.searchAuthors(query);
 
         if (response != null && response.authors() != null) {
             List<AuthorDto> authors = response.authors();
@@ -66,12 +65,27 @@ public class AuthorService {
                 author.getName(),
                 author.getKey(),
                 author.getAlternateNames(),
-                author.getBirthDate().toString(),
-                author.getDeathDate() != null ? author.getDeathDate().toString() : "N/A",
+                author.getBirthDate() != null ? author.getBirthDate().toString() : null,
+                author.getDeathDate() != null ? author.getDeathDate().toString() : null,
                 author.getTopSubjects(),
                 author.getTopWork(),
                 author.getWorkCount()
         );
+    }
+
+    private void setAllFieldsAndSave(Author author, AuthorDto dto) {
+        author.setName(dto.name() != null ? dto.name() : "Unknown");
+        author.setKey(dto.key());
+        author.setAlternateNames(dto.alternateNames());
+        author.setTopSubjects(dto.topSubjects());
+        author.setTopWork(dto.topWork());
+
+        author.setWorkCount(dto.workCount() != null ? dto.workCount() : 0);
+
+        author.setBirthDate(dto.birthDate() != null ? LocalDate.parse(dto.birthDate()) : null);
+        author.setDeathDate(!dto.deathDate().isEmpty() ? LocalDate.parse(dto.deathDate()) : null);
+
+        db.getAuthors().save(author);
     }
 }
 
