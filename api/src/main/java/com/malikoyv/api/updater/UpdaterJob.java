@@ -36,10 +36,18 @@ public class UpdaterJob implements IUpdaterJob {
         System.out.println("Books update completed.");
     }
 
-    @Scheduled(cron = "0 0 * * * ?") // Run every day at midnight
+    @Scheduled(cron = "0 */5 * * * ?") // Run every 5 minutes
     public void updateRating() {
-        System.out.println("Updating ratings from Open Library...");
-        ratingService.getRatingByBookId(1L);
+        System.out.println("Updating ratings for all books...");
+        bookService.getAllBooks().forEach(book -> {
+            try {
+                ratingService.updateRatingByBookKey(book.key());
+                System.out.println("Updated rating for book: " + book.title());
+            } catch (Exception e) {
+                System.err.println("Failed to update rating for book key: " + book.key() + " - " + e.getMessage());
+            }
+        });
         System.out.println("Ratings update completed.");
     }
+
 }

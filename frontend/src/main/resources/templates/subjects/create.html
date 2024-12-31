@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Subject</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #007bff;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .btn-link {
+            color: #007bff;
+        }
+        .btn-link:hover {
+            color: #0056b3;
+            text-decoration: none;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="mb-4">Create Subject</h1>
+
+    <form action="/subjects" method="post" class="needs-validation" novalidate>
+        <div class="form-group">
+            <label for="name">Subject Name</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+
+    <a href="/subjects" class="btn btn-link mt-3">Back to Subjects</a>
+</div>
+</body>
+</html>

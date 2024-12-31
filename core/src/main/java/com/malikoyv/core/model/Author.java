@@ -27,7 +27,7 @@ public class Author {
 
     private String biography;
 
-    @Column(name = "author_key")
+    @Column(name = "author_key", unique = true, nullable = false)
     private String key; // from the API
 
     @ElementCollection

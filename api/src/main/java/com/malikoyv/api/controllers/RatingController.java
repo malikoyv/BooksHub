@@ -14,14 +14,5 @@ public class RatingController {
         this.ratingService = ratingService;
     }
 
-    @GetMapping("/{bookId}")
-    public RatingDto getRating(@PathVariable long bookId) {
-        return ratingService.getRatingByBookId(bookId);
-    }
-
-    @PostMapping("/{bookId}")
-    public void updateRating(@PathVariable long bookId) {
-        ratingService.updateRatingByBookId(bookId);
-    }
 }
 

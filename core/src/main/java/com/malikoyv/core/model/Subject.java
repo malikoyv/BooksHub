@@ -1,5 +1,7 @@
 package com.malikoyv.core.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,8 +18,11 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String name;
 
+    @JsonIgnoreProperties({"books"})
     @ManyToMany(mappedBy = "subjects")
+    @JsonIgnore
     private List<Book> books = new ArrayList<>();
 }

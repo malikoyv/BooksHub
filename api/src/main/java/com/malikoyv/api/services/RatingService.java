@@ -8,11 +8,8 @@ import com.malikoyv.client.mappers.CountsMapper;
 import com.malikoyv.client.mappers.SummaryMapper;
 import com.malikoyv.core.model.*;
 import com.malikoyv.core.repositories.ICatalogData;
-import com.malikoyv.core.repositories.IRatingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class RatingService {
@@ -26,15 +23,13 @@ public class RatingService {
         this.booksClient = booksClient;
     }
 
-    public RatingDto getRatingByBookId(Long bookId) {
-        Rating rating = db.getRatings().findByBookId(bookId)
+    public Rating getRatingByBookId(Long bookId) {
+        return db.getRatings().findByBookId(bookId)
                 .orElseThrow(() -> new RuntimeException("Rating not found for Book ID: " + bookId));
-        return toDto(rating);
     }
 
-    public void updateRatingByBookId(Long bookId) {
-        Book book = db.getBooks().findById(bookId)
-                .orElseThrow(() -> new RuntimeException("Book not found for ID: " + bookId));
+    public void updateRatingByBookKey(String key) {
+        Book book = db.getBooks().findByKey(key);
 
         RatingDto response = booksClient.getRatings(book.getKey().split("/")[2]);
 

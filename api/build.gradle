@@ -26,6 +26,7 @@ dependencies {
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.36'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
 }
 
 tasks.named('test') {

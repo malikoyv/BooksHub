@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface IAuthorRepository extends JpaRepository<Author, Long> {
     Optional<Author> findByKey(String key);
     Optional<Author> findByName(String name);
+
+    List<Author> findByKeyIn(List<String> authors);
 }

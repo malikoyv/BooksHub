@@ -2,36 +2,79 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Update Author</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #007bff;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .btn-link {
+            color: #007bff;
+        }
+        .btn-link:hover {
+            color: #0056b3;
+            text-decoration: none;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+        }
+    </style>
 </head>
 <body>
-<h1>Update Author</h1>
-<form th:action="@{/authors/{key}(key=${author.key})}" th:object="${author}" method="post">
-    <input type="hidden" name="_method" value="PUT">
-    <input type="hidden" th:field="*{key}">
-    <label for="name">Name</label>
-    <input type="text" id="name" th:field="*{name}" required>
-    <br>
-    <label for="alternateNames">Alternate Names</label>
-    <textarea id="alternateNames" th:field="*{alternateNames}"></textarea>
-    <br>
-    <label for="birthDate">Birth Date</label>
-    <input type="date" id="birthDate" th:field="*{birthDate}">
-    <br>
-    <label for="deathDate">Death Date</label>
-    <input type="date" id="deathDate" th:field="*{deathDate}">
-    <br>
-    <label for="topSubjects">Top Subjects</label>
-    <textarea id="topSubjects" th:field="*{topSubjects}"></textarea>
-    <br>
-    <label for="topWork">Top Work</label>
-    <input type="text" id="topWork" th:field="*{topWork}">
-    <br>
-    <label for="workCount">Work Count</label>
-    <input type="number" id="workCount" th:field="*{workCount}">
-    <br>
-    <button type="submit">Save</button>
-</form>
-<a href="/authors">Back to Authors</a>
+<div class="container">
+    <h1 class="mb-4">Update Author</h1>
+    <form th:action="@{/authors/{key}(key=${author.key})}" th:object="${author}" method="post" class="needs-validation" novalidate>
+        <input type="hidden" name="_method" value="PUT">
+        <input type="hidden" th:field="*{key}">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" th:field="*{name}" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="alternateNames">Alternate Names</label>
+            <textarea id="alternateNames" th:field="*{alternateNames}" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="birthDate">Birth Date</label>
+            <input type="date" id="birthDate" th:field="*{birthDate}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="deathDate">Death Date</label>
+            <input type="date" id="deathDate" th:field="*{deathDate}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="topSubjects">Top Subjects</label>
+            <textarea id="topSubjects" th:field="*{topSubjects}" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="topWork">Top Work</label>
+            <input type="text" id="topWork" th:field="*{topWork}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="workCount">Work Count</label>
+            <input type="number" id="workCount" th:field="*{workCount}" class="form-control" min="0" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+    <a href="/authors" class="btn btn-link mt-3">Back to Authors</a>
+</div>
 </body>
 </html>

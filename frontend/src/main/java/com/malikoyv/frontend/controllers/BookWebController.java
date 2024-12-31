@@ -2,6 +2,7 @@ package com.malikoyv.frontend.controllers;
 
 import com.malikoyv.client.contract.AuthorDto;
 import com.malikoyv.client.contract.BookDto;
+import com.malikoyv.core.model.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,11 +34,11 @@ public class BookWebController {
     @GetMapping("/create")
     public String createBookForm(Model model) {
         AuthorDto[] authorsArray = restTemplate.getForObject("http://localhost:8080/api/authors", AuthorDto[].class);
-        List<AuthorDto> authors = Arrays.asList(authorsArray);
+        Subject[] subjectsArray = restTemplate.getForObject("http://localhost:8080/api/subjects", Subject[].class);
 
-        model.addAttribute("book", new BookDto("", "", List.of(), "", List.of("")));
-        model.addAttribute("allAuthors", authors);
-        model.addAttribute("action", "create");
+        model.addAttribute("allSubjects", Arrays.asList(subjectsArray));
+        model.addAttribute("book", new BookDto("", "", List.of(), "", List .of("")));
+        model.addAttribute("allAuthors", Arrays.asList(authorsArray));
         return "books/create";
     }
 
@@ -45,11 +46,12 @@ public class BookWebController {
     public String updateBookForm(@PathVariable String key, Model model) {
         BookDto book = restTemplate.getForObject("http://localhost:8080/api/books/" + key, BookDto.class);
         AuthorDto[] authorsArray = restTemplate.getForObject("http://localhost:8080/api/authors", AuthorDto[].class);
-        List<AuthorDto> authors = Arrays.asList(authorsArray);
+        Subject[] subjectsArray = restTemplate.getForObject("http://localhost:8080/api/subjects", Subject[].class);
 
+        model.addAttribute("allSubjects", Arrays.asList(subjectsArray));
+        model.addAttribute("allAuthors", Arrays.asList(authorsArray));
         model.addAttribute("book", book);
-        model.addAttribute("allAuthors", authors);
-        model.addAttribute("action", "update");
+
         return "books/update";
     }
 
@@ -62,6 +64,12 @@ public class BookWebController {
     @PutMapping("/{key}")
     public String updateBook(@PathVariable String key, @ModelAttribute BookDto book) {
         restTemplate.put("http://localhost:8080/api/books/" + key, book);
+        return "redirect:/books";
+    }
+
+    @PostMapping("/delete/{key}")
+    public String deleteBook(@PathVariable String key) {
+        restTemplate.delete("http://localhost:8080/api/books/" + key);
         return "redirect:/books";
     }
 }

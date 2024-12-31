@@ -30,16 +30,7 @@ public class AuthorWebController {
 
     @GetMapping("/create")
     public String createAuthorForm(Model model) {
-        model.addAttribute("author", new AuthorDto(
-                "",
-                "",
-                List.of(),
-                "",
-                "",
-                null,
-                "",
-                0
-        ));
+        model.addAttribute("author", new AuthorDto("", "", List.of(), "", "", null, "", 0));
         return "authors/create";
     }
 

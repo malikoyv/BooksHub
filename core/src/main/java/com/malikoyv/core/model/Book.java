@@ -1,12 +1,15 @@
 package com.malikoyv.core.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -17,12 +20,12 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "book_key")
+    @Column(name = "book_key", unique = true, nullable = false)
     private String key;
 
     private String title;
 
-    private LocalDate publishDate;
+    private Integer publishDate;
     private String description;
     private int pageCount;
     private String language;
@@ -38,8 +41,8 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Edition> editions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
+    @OneToOne(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Rating rating;
 
     @ManyToMany
     @JoinTable(

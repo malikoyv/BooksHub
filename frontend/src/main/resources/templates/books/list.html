@@ -2,34 +2,109 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Books</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #007bff;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .btn-link {
+            color: #007bff;
+        }
+        .btn-link:hover {
+            color: #0056b3;
+            text-decoration: none;
+        }
+        .table th {
+            color: #007bff;
+        }
+        .table tr:hover {
+            background-color: #f8f9fa;
+        }
+        .rating {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+    </style>
 </head>
 <body>
-<h1>Books</h1>
-<a href="/books/create">Create New Book</a>
-<table>
-    <thead>
-    <tr>
-        <th>Title</th>
-        <th>First Publish Year</th>
-        <th>Authors</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="book : ${books}">
-        <td th:text="${book.title}"></td>
-        <td th:text="${book.firstPublishDate}"></td>
-        <td>
-            <ul>
-                <li th:each="author : ${book.authors}" th:text="${author}"></li>
-            </ul>
-        </td>
-        <td>
-            <a th:href="@{/books/{key}/update(key=${book.key})}">Update</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div class="container">
+    <h1 class="mb-4">Books</h1>
+    <a href="/books/create" class="btn btn-primary mb-3">Create New Book</a>
+
+    <div class="mb-3 d-flex align-items-center">
+        <input type="text" id="fetch" class="form-control narrow-input mr-2" placeholder="Enter title to fetch books">
+        <button onclick="fetchBooks()" class="btn btn-secondary btn-sm">Fetch</button>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>First Publish Year</th>
+            <th>Authors</th>
+            <th>Subjects</th>
+            <th>Rating</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${books}">
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.firstPublishDate}"></td>
+            <td>
+                <ul class="list-unstyled">
+                    <li th:each="author : ${book.authors}" th:text="${author}"></li>
+                </ul>
+            </td>
+            <td>
+                <ul class="list-unstyled">
+                    <li th:each="subject : ${book.subjects}" th:text="${subject}"></li>
+                </ul>
+            </td>
+            <td>
+                <div class="rating">
+                    <span th:text="'Average: '  + ' ★'"></span><br>
+                    <span th:text="'Count: ' "></span>
+                </div>
+            </td>
+            <td>
+                <a th:href="@{/books/{key}/update(key=${book.key})}" class="btn btn-info btn-sm">Update</a>
+                <form th:action="@{/books/delete/{key}(key=${book.key})}" th:object="${book}" method="post">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function fetchBooks() {
+        const query = document.getElementById('fetch').value;
+        if (query.trim() !== "") {
+            window.location.href = `/books/fetch/${query}`;
+        } else {
+            alert('Please enter a title to fetch books.');
+        }
+    }
+</script>
 </body>
 </html>
