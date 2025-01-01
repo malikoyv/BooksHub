@@ -14,5 +14,9 @@ public class RatingController {
         this.ratingService = ratingService;
     }
 
+    @GetMapping("/{key}")
+    public RatingDto getRating(@PathVariable String key) {
+        return ratingService.getRatingByBookKey(key);
+    }
 }
 

@@ -22,8 +22,7 @@ public class BookMapper implements IMapper<BookDto, Book>{
         book.setPublishDate(Integer.parseInt(bookDto.firstPublishDate()));
 
         for (String subject : bookDto.subjects()) {
-            Subject newSubject = new Subject();
-            newSubject.setName(subject);
+            Subject newSubject = new Subject(subject);
             book.getSubjects().add(newSubject);
         }
 

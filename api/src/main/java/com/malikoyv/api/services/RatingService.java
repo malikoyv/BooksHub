@@ -8,6 +8,7 @@ import com.malikoyv.client.mappers.CountsMapper;
 import com.malikoyv.client.mappers.SummaryMapper;
 import com.malikoyv.core.model.*;
 import com.malikoyv.core.repositories.ICatalogData;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,28 +24,55 @@ public class RatingService {
         this.booksClient = booksClient;
     }
 
-    public Rating getRatingByBookId(Long bookId) {
-        return db.getRatings().findByBookId(bookId)
-                .orElseThrow(() -> new RuntimeException("Rating not found for Book ID: " + bookId));
-    }
-
-    public void updateRatingByBookKey(String key) {
-        Book book = db.getBooks().findByKey(key);
-
-        RatingDto response = booksClient.getRatings(book.getKey().split("/")[2]);
-
-        if (response != null) {
-            Counts dbCounts = new CountsMapper().map(response.countsDto());
-            Summary summary = new SummaryMapper().map(response.summaryDto());
-
-            db.getSummaries().save(new Summary(summary.getAverage(), summary.getCount(), summary.getSortableAverage()));
-            db.getCounts().save(new Counts(dbCounts.getOneStar(), dbCounts.getTwoStars(), dbCounts.getThreeStars(), dbCounts.getFourStars(), dbCounts.getFiveStars()));
-            db.getRatings().save(new Rating(book, summary, dbCounts));
-            System.out.println("Saved/Updated rating: " + response);
+    public RatingDto getRatingByBookKey(String key) {
+        Rating rating = db.getRatings().findByBookKey(key);
+        if (rating != null) {
+            return toDto(rating);
+        } else {
+            return new RatingDto(
+                    new RatingDto.SummaryDto(0.0, 0, 0.0),
+                    new RatingDto.CountsDto(0, 0, 0, 0, 0)
+            );
         }
     }
 
-    private RatingDto toDto(Rating rating) {
+    @Transactional
+    public void updateRatingByBookKey(String key) {
+        try {
+            Book book = db.getBooks().findByKey(key);
+
+            String[] keyParts = book.getKey().split("/");
+            String bookKey;
+            if (keyParts.length >= 3) {
+                bookKey = keyParts[2];
+            } else {
+                bookKey = key;
+            }
+
+            RatingDto response = booksClient.getRatings(bookKey);
+
+            if (response != null) {
+                Rating existingRating = db.getRatings().findByBookKey(key);
+                if (existingRating == null) {
+                    Counts dbCounts = new CountsMapper().map(response.countsDto());
+                    Summary summary = new SummaryMapper().map(response.summaryDto());
+
+                    db.getSummaries().save(summary);
+                    db.getCounts().save(dbCounts);
+                    db.getRatings().save(new Rating(book, summary, dbCounts));
+                } else {
+                    existingRating.setCounts(new CountsMapper().map(response.countsDto()));
+                    existingRating.setSummary(new SummaryMapper().map(response.summaryDto()));
+                    db.getRatings().save(existingRating);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to update rating for book key: " + key + " - " + e.getMessage());
+            throw e;
+        }
+    }
+
+    public RatingDto toDto(Rating rating) {
         return new RatingDto(
                 new SummaryMapper().map(rating.getSummary()),
                 new CountsMapper().map(rating.getCounts())

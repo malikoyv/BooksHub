@@ -11,4 +11,7 @@ import java.util.Optional;
 public interface IRatingRepository extends JpaRepository<Rating, Long> {
     @Query("SELECT r FROM Rating r WHERE r.book.id = :bookId")
     Optional<Rating> findByBookId(Long bookId);
+
+    @Query("SELECT r FROM Rating r WHERE r.book.key = :key")
+    Rating findByBookKey(String key);
 }

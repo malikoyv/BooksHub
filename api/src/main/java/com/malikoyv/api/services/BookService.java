@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,9 +41,23 @@ public class BookService {
         bookEntity.setKey(dto.key());
         bookEntity.setPublishDate(Integer.parseInt(dto.firstPublishDate()));
         bookEntity.setAuthors(db.getAuthors().findByKeyIn(dto.authors()));
-        bookEntity.setSubjects(new ArrayList<>(db.getSubjects().findByNameIn(dto.subjects())));
 
-        db.getBooks().save(bookEntity);
+        List<Subject> subjects = new ArrayList<>();
+        for (String subjectName : dto.subjects()) {
+            if (subjectName.length() > 255) {
+                subjectName = subjectName.substring(0, 255);
+            }
+
+            String finalSubjectName = subjectName;
+            Subject subject = db.getSubjects().findByName(subjectName).orElseGet(() -> {
+                Subject newSubject = new Subject(finalSubjectName);
+                return db.getSubjects().save(newSubject);
+            });
+            subjects.add(subject);
+        }
+
+        bookEntity.setSubjects(subjects);
+        db.getBooks().save(bookEntity);  // Save the book entity
 
         return bookEntity.getId();
     }
@@ -61,8 +76,16 @@ public class BookService {
         book.setPublishDate(Integer.parseInt(dto.firstPublishDate()));
         book.setKey(dto.key());
 
-        List<Subject> subjects = db.getSubjects().findByNameIn(dto.subjects());
-        book.setSubjects(new ArrayList<>(subjects));
+        List<Subject> subjects = new ArrayList<>();
+        for (String subjectName : dto.subjects()) {
+            Subject subject = db.getSubjects().findByName(subjectName).orElseGet(() -> {
+                Subject newSubject = new Subject(subjectName);
+                return db.getSubjects().save(newSubject);
+            });
+            subjects.add(subject);
+        }
+
+        book.setSubjects(subjects);
         book.setAuthors(db.getAuthors().findByKeyIn(dto.authors()));
 
         db.getBooks().save(book);
@@ -79,9 +102,36 @@ public class BookService {
         if (response != null && response.books() != null) {
             List<BookDto> books = response.books();
             for (BookDto dto : books) {
-                Book book = bookMapper.map(dto);
+                Optional<Book> existingBookOptional = Optional.ofNullable(db.getBooks().findByKey(dto.key()));
+                Book book;
+
+                if (existingBookOptional.isPresent()) {
+                    book = existingBookOptional.get();
+                    book.setTitle(dto.title());
+                    book.setPublishDate(Integer.parseInt(dto.firstPublishDate()));
+                    book.setKey(dto.key());
+                } else {
+                    book = bookMapper.map(dto);
+                }
+
+                List<Subject> subjects = new ArrayList<>();
+                for (String subjectName : dto.subjects()) {
+                    if (subjectName.length() > 255) {
+                        subjectName = subjectName.substring(0, 255);
+                    }
+                    String finalSubjectName = subjectName;
+                    Subject subject = db.getSubjects().findByName(subjectName).orElseGet(() -> {
+                        Subject newSubject = new Subject(finalSubjectName);
+                        return db.getSubjects().save(newSubject);
+                    });
+                    subjects.add(subject);
+                }
+
+                book.setSubjects(subjects);
+                book.setAuthors(db.getAuthors().findByKeyIn(dto.authors()));
+
                 db.getBooks().save(book);
-                db.getSubjects().saveAll(book.getSubjects());
+
                 System.out.println("Saved/Updated book: " + book.getTitle());
             }
         }
@@ -93,7 +143,11 @@ public class BookService {
                 book.getTitle(),
                 book.getAuthors().stream().map(Author::getName).collect(Collectors.toList()),
                 book.getPublishDate() != null ? book.getPublishDate().toString() : "N/A",
-                book.getSubjects().stream().map(Subject::getName).collect(Collectors.toList())
+                book.getSubjects().stream().map(Subject::getName).collect(Collectors.toList()),
+                book.getRating() != null ? ratingService.toDto(book.getRating()) : new RatingDto(
+                        new RatingDto.SummaryDto(0.0, 0, 0.0),
+                        new RatingDto.CountsDto(0, 0, 0, 0, 0)
+                )
         );
     }
 }

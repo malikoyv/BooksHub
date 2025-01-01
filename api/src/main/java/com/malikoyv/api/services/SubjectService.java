@@ -16,8 +16,7 @@ public class SubjectService {
     }
 
     public long saveSubject(String name) {
-        Subject subject = new Subject();
-        subject.setName(name);
+        Subject subject = new Subject(name);
         db.getSubjects().save(subject);
         return subject.getId();
     }

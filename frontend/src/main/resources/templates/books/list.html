@@ -81,8 +81,8 @@
             </td>
             <td>
                 <div class="rating">
-                    <span th:text="'Average: '  + ' ★'"></span><br>
-                    <span th:text="'Count: ' "></span>
+                    <span th:if="${book.rating != null}" th:text="'Average: ' + ${book.rating.summaryDto().average()} + ' ★'"></span>
+                    <span th:if="${book.rating != null}" th:text="'Count: ' + ${book.rating.summaryDto().count()}"></span>
                 </div>
             </td>
             <td>

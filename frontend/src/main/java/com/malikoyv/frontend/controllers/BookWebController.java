@@ -2,6 +2,8 @@ package com.malikoyv.frontend.controllers;
 
 import com.malikoyv.client.contract.AuthorDto;
 import com.malikoyv.client.contract.BookDto;
+import com.malikoyv.client.contract.RatingDto;
+import com.malikoyv.core.model.Rating;
 import com.malikoyv.core.model.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/books")
@@ -27,7 +30,23 @@ public class BookWebController {
     public String listBooks(Model model) {
         BookDto[] booksArray = restTemplate.getForObject("http://localhost:8080/api/books", BookDto[].class);
         List<BookDto> books = Arrays.asList(booksArray);
-        model.addAttribute("books", books);
+
+        List<BookDto> booksWithRatings = books.stream()
+                .map(book -> {
+                    RatingDto rating = restTemplate.getForObject("http://localhost:8080/api/ratings/" +
+                            book.key().substring(book.key().lastIndexOf('/') + 1), RatingDto.class);
+                    return new BookDto(
+                            book.key(),
+                            book.title(),
+                            book.authors(),
+                            book.firstPublishDate(),
+                            book.subjects(),
+                            rating
+                    );
+                })
+                .collect(Collectors.toList());
+
+        model.addAttribute("books", booksWithRatings);
         return "books/list";
     }
 
@@ -37,7 +56,7 @@ public class BookWebController {
         Subject[] subjectsArray = restTemplate.getForObject("http://localhost:8080/api/subjects", Subject[].class);
 
         model.addAttribute("allSubjects", Arrays.asList(subjectsArray));
-        model.addAttribute("book", new BookDto("", "", List.of(), "", List .of("")));
+        model.addAttribute("book", new BookDto("", "", List.of(), "", List.of(""), null));
         model.addAttribute("allAuthors", Arrays.asList(authorsArray));
         return "books/create";
     }
@@ -70,6 +89,12 @@ public class BookWebController {
     @PostMapping("/delete/{key}")
     public String deleteBook(@PathVariable String key) {
         restTemplate.delete("http://localhost:8080/api/books/" + key);
+        return "redirect:/books";
+    }
+
+    @GetMapping("/fetch/{query}")
+    public String fetchBooks(@PathVariable String query, Model model) {
+        restTemplate.postForObject("http://localhost:8080/api/books/fetch/" + query, null, Void.class);
         return "redirect:/books";
     }
 }

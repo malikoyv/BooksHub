@@ -44,7 +44,7 @@ public class Book {
     @OneToOne(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private Rating rating;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "book_subjects",
             joinColumns = @JoinColumn(name = "book_id"),
