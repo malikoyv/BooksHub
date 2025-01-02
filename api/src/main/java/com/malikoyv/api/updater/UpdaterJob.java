@@ -28,7 +28,7 @@ public class UpdaterJob implements IUpdaterJob {
         System.out.println("Books update completed.");
     }
 
-    @Scheduled(cron = "0 */3 * * * ?") // Run every 5 minutes
+    @Scheduled(cron = "0 */30 * * * ?") // Run every 5 minutes
     @Transactional
     public void updateRating() {
         System.out.println("Updating ratings for all books...");

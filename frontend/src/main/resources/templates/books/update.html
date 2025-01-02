@@ -72,7 +72,7 @@
         <div class="form-group">
             <label for="subjects">Subjects</label>
             <select id="subjects" th:field="*{subjects}" multiple class="form-control">
-                <option th:each="subject : ${allSubjects}" th:value="${subject.id}" th:text="${subject.name}"></option>
+                <option th:each="subject : ${allSubjects}" th:value="${subject.name}" th:text="${subject.name}"></option>
             </select>
             <button type="button" onclick="openSubjectCreation()" class="btn btn-secondary btn-sm mt-2">Create New Subject</button>
         </div>

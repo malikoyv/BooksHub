@@ -7,16 +7,12 @@ import com.malikoyv.client.mappers.BookMapper;
 import com.malikoyv.core.model.Author;
 import com.malikoyv.core.model.Book;
 import com.malikoyv.client.contract.BookDto;
-import com.malikoyv.core.model.Rating;
 import com.malikoyv.core.model.Subject;
 import com.malikoyv.core.repositories.ICatalogData;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,6 +38,13 @@ public class BookService {
         bookEntity.setPublishDate(Integer.parseInt(dto.firstPublishDate()));
         bookEntity.setAuthors(db.getAuthors().findByKeyIn(dto.authors()));
 
+        addSubjects(dto, bookEntity);
+        db.getBooks().save(bookEntity);
+
+        return bookEntity.getId();
+    }
+
+    private void addSubjects(BookDto dto, Book bookEntity) {
         List<Subject> subjects = new ArrayList<>();
         for (String subjectName : dto.subjects()) {
             if (subjectName.length() > 255) {
@@ -57,9 +60,6 @@ public class BookService {
         }
 
         bookEntity.setSubjects(subjects);
-        db.getBooks().save(bookEntity);  // Save the book entity
-
-        return bookEntity.getId();
     }
 
     public BookDto getBook(String key) {
@@ -102,32 +102,20 @@ public class BookService {
         if (response != null && response.books() != null) {
             List<BookDto> books = response.books();
             for (BookDto dto : books) {
-                Optional<Book> existingBookOptional = Optional.ofNullable(db.getBooks().findByKey(dto.key()));
+                String key = bookMapper.extractKey(dto.key());
+                Optional<Book> existingBookOptional = Optional.ofNullable(db.getBooks().findByKey(key));
                 Book book;
 
                 if (existingBookOptional.isPresent()) {
                     book = existingBookOptional.get();
                     book.setTitle(dto.title());
                     book.setPublishDate(Integer.parseInt(dto.firstPublishDate()));
-                    book.setKey(dto.key());
+                    book.setKey(key);
                 } else {
                     book = bookMapper.map(dto);
                 }
 
-                List<Subject> subjects = new ArrayList<>();
-                for (String subjectName : dto.subjects()) {
-                    if (subjectName.length() > 255) {
-                        subjectName = subjectName.substring(0, 255);
-                    }
-                    String finalSubjectName = subjectName;
-                    Subject subject = db.getSubjects().findByName(subjectName).orElseGet(() -> {
-                        Subject newSubject = new Subject(finalSubjectName);
-                        return db.getSubjects().save(newSubject);
-                    });
-                    subjects.add(subject);
-                }
-
-                book.setSubjects(subjects);
+                addSubjects(dto, book);
                 book.setAuthors(db.getAuthors().findByKeyIn(dto.authors()));
 
                 db.getBooks().save(book);

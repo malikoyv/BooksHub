@@ -42,6 +42,17 @@
             font-size: 0.9em;
             color: #6c757d;
         }
+        .hidden {
+            display: none;
+        }
+        .toggle-button {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: underline;
+        }
+        .toggle-button:hover {
+            color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -71,13 +82,17 @@
             <td th:text="${book.firstPublishDate}"></td>
             <td>
                 <ul class="list-unstyled">
-                    <li th:each="author : ${book.authors}" th:text="${author}"></li>
+                    <li th:each="author, iterStat : ${book.authors}" th:if="${iterStat.index < 3}" th:text="${author}"></li>
+                    <li th:each="author, iterStat : ${book.authors}" th:if="${iterStat.index >= 3}" class="hidden" th:text="${author}"></li>
                 </ul>
+                <a class="toggle-button" onclick="toggleAuthors(this)">Show More</a>
             </td>
             <td>
                 <ul class="list-unstyled">
-                    <li th:each="subject : ${book.subjects}" th:text="${subject}"></li>
+                    <li th:each="subject, iterStat : ${book.subjects}" th:if="${iterStat.index < 3}" th:text="${subject}"></li>
+                    <li th:each="subject, iterStat : ${book.subjects}" th:if="${iterStat.index >= 3}" class="hidden" th:text="${subject}"></li>
                 </ul>
+                <a class="toggle-button" onclick="toggleSubjects(this)">Show More</a>
             </td>
             <td>
                 <div class="rating">
@@ -104,6 +119,30 @@
         } else {
             alert('Please enter a title to fetch books.');
         }
+    }
+
+    function toggleAuthors(button) {
+        const authorsList = button.previousElementSibling;
+        const hiddenAuthors = authorsList.querySelectorAll('li.hidden');
+        const showMore = button.textContent === 'Show More';
+
+        hiddenAuthors.forEach(author => {
+            author.classList.toggle('hidden');
+        });
+
+        button.textContent = showMore ? 'Show Less' : 'Show More';
+    }
+
+    function toggleSubjects(button) {
+        const subjectsList = button.previousElementSibling;
+        const hiddenSubjects = subjectsList.querySelectorAll('li.hidden');
+        const showMore = button.textContent === 'Show More';
+
+        hiddenSubjects.forEach(subject => {
+            subject.classList.toggle('hidden');
+        });
+
+        button.textContent = showMore ? 'Show Less' : 'Show More';
     }
 </script>
 </body>
