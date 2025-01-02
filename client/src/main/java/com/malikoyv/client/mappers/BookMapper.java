@@ -21,12 +21,14 @@ public class BookMapper implements IMapper<BookDto, Book> {
 
         book.getSubjects().clear();
 
-        for (String subject : bookDto.subjects()) {
-            if (subject.length() > 255) {
-                subject = subject.substring(0, 255);
+        if (bookDto.subjects() != null){
+            for (String subject : bookDto.subjects()) {
+                if (subject.length() > 255) {
+                    subject = subject.substring(0, 255);
+                }
+                Subject newSubject = new Subject(subject);
+                book.getSubjects().add(newSubject);
             }
-            Subject newSubject = new Subject(subject);
-            book.getSubjects().add(newSubject);
         }
 
         return book;

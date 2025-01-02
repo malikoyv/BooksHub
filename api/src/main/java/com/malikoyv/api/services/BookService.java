@@ -1,6 +1,7 @@
 package com.malikoyv.api.services;
 
 import com.malikoyv.client.IBooksClient;
+import com.malikoyv.client.contract.AuthorDto;
 import com.malikoyv.client.contract.BookPagedResultDto;
 import com.malikoyv.client.contract.RatingDto;
 import com.malikoyv.client.mappers.BookMapper;
@@ -12,7 +13,6 @@ import com.malikoyv.core.repositories.ICatalogData;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,12 +23,14 @@ public class BookService {
     private final BookMapper bookMapper;
     private final RatingService ratingService;
     private final ICatalogData db;
+    private final AuthorService authorService;
 
-    public BookService(IBooksClient booksClient, BookMapper bookMapper, RatingService ratingService, ICatalogData db) {
+    public BookService(IBooksClient booksClient, BookMapper bookMapper, RatingService ratingService, ICatalogData db, AuthorService authorService) {
         this.booksClient = booksClient;
         this.bookMapper = bookMapper;
         this.ratingService = ratingService;
         this.db = db;
+        this.authorService = authorService;
     }
 
     public long saveBook(BookDto dto) {
@@ -36,7 +38,7 @@ public class BookService {
         bookEntity.setTitle(dto.title());
         bookEntity.setKey(dto.key());
         bookEntity.setPublishDate(Integer.parseInt(dto.firstPublishDate()));
-        bookEntity.setAuthors(db.getAuthors().findByKeyIn(dto.authors()));
+        bookEntity.setAuthors(addAuthors(dto.authors()));
 
         addSubjects(dto, bookEntity);
         db.getBooks().save(bookEntity);
@@ -44,20 +46,35 @@ public class BookService {
         return bookEntity.getId();
     }
 
-    private void addSubjects(BookDto dto, Book bookEntity) {
-        List<Subject> subjects = new ArrayList<>();
-        for (String subjectName : dto.subjects()) {
-            if (subjectName.length() > 255) {
-                subjectName = subjectName.substring(0, 255);
-            }
+    private List<Author> addAuthors(List<String> authorNames) {
+        return authorNames.stream()
+                .map(authorName -> db.getAuthors().findByName(authorName)
+                        .orElseGet(() -> {
+                            // Create a new Author if not found
+                            Author newAuthor = new Author();
+                            newAuthor.setName(authorName);
+                            // Save the new Author entity to the database
+                            return db.getAuthors().save(newAuthor);
+                        }))
+                .collect(Collectors.toList());
+    }
 
-            String finalSubjectName = subjectName;
-            Subject subject = db.getSubjects().findByName(subjectName).orElseGet(() -> {
-                Subject newSubject = new Subject(finalSubjectName);
-                return db.getSubjects().save(newSubject);
-            });
-            subjects.add(subject);
-        }
+
+    private void addSubjects(BookDto dto, Book bookEntity) {
+        List<Subject> subjects = dto.subjects() != null
+                ? dto.subjects().stream()
+                .map(subjectName -> {
+                    if (subjectName.length() > 255) {
+                        subjectName = subjectName.substring(0, 255);
+                    }
+                    String finalSubjectName = subjectName;
+                    return db.getSubjects().findByName(subjectName).orElseGet(() -> {
+                        Subject newSubject = new Subject(finalSubjectName);
+                        return db.getSubjects().save(newSubject);
+                    });
+                })
+                .collect(Collectors.toList())
+                : List.of();
 
         bookEntity.setSubjects(subjects);
     }
@@ -76,17 +93,8 @@ public class BookService {
         book.setPublishDate(Integer.parseInt(dto.firstPublishDate()));
         book.setKey(dto.key());
 
-        List<Subject> subjects = new ArrayList<>();
-        for (String subjectName : dto.subjects()) {
-            Subject subject = db.getSubjects().findByName(subjectName).orElseGet(() -> {
-                Subject newSubject = new Subject(subjectName);
-                return db.getSubjects().save(newSubject);
-            });
-            subjects.add(subject);
-        }
-
-        book.setSubjects(subjects);
-        book.setAuthors(db.getAuthors().findByKeyIn(dto.authors()));
+        book.setAuthors(addAuthors(dto.authors()));
+        addSubjects(dto, book);
 
         db.getBooks().save(book);
     }
@@ -115,8 +123,8 @@ public class BookService {
                     book = bookMapper.map(dto);
                 }
 
+                book.setAuthors(addAuthors(dto.authors()));
                 addSubjects(dto, book);
-                book.setAuthors(db.getAuthors().findByKeyIn(dto.authors()));
 
                 db.getBooks().save(book);
 
@@ -129,7 +137,7 @@ public class BookService {
         return new BookDto(
                 book.getKey(),
                 book.getTitle(),
-                book.getAuthors().stream().map(Author::getName).collect(Collectors.toList()),
+                book.getAuthors().stream().map(Author::getName).collect(Collectors.toList()), // Map authors to their names
                 book.getPublishDate() != null ? book.getPublishDate().toString() : "N/A",
                 book.getSubjects().stream().map(Subject::getName).collect(Collectors.toList()),
                 book.getRating() != null ? ratingService.toDto(book.getRating()) : new RatingDto(

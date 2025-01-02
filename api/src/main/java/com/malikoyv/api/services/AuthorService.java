@@ -25,10 +25,10 @@ public class AuthorService {
         this.db = db;
     }
 
-    public long saveAuthor(AuthorDto dto) {
+    public Author saveAuthor(AuthorDto dto) {
         var author = new Author();
         setAllFieldsAndSave(author, dto);
-        return author.getId();
+        return author;
     }
 
     public AuthorDto getAuthor(String key) {

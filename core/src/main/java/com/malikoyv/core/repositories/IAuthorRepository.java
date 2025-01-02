@@ -13,4 +13,6 @@ public interface IAuthorRepository extends JpaRepository<Author, Long> {
     Optional<Author> findByName(String name);
 
     List<Author> findByKeyIn(List<String> authors);
+
+    Optional<Author> findAuthorByName(String authorName);
 }

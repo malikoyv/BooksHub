@@ -2,6 +2,7 @@ package com.malikoyv.api.controllers;
 
 import com.malikoyv.client.contract.AuthorDto;
 import com.malikoyv.api.services.AuthorService;
+import com.malikoyv.core.model.Author;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class AuthorController {
     }
 
     @PostMapping
-    public long createAuthor(@RequestBody AuthorDto dto) {
+    public Author createAuthor(@RequestBody AuthorDto dto) {
         return authorService.saveAuthor(dto);
     }
 

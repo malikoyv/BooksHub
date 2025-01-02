@@ -28,7 +28,7 @@ public class Author {
     private String biography;
 
     @Column(name = "author_key", unique = true, nullable = false)
-    private String key; // from the API
+    private String key;
 
     @ElementCollection
     @CollectionTable(name = "author_alternate_names", joinColumns = @JoinColumn(name = "author_id"))
