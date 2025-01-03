@@ -47,6 +47,12 @@ public class AuthorService {
         setAllFieldsAndSave(author, dto);
     }
 
+    public void deleteAuthor(String key) {
+        Author author = db.getAuthors().findByKey(key)
+                .orElseThrow(() -> new EntityNotFoundException("Author not found with key: " + key));
+        db.getAuthors().delete(author);
+    }
+
     public void updateAuthorsFromOpenLibrary(String query) {
         AuthorSearchResponse response = booksClient.searchAuthors(query);
 

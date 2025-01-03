@@ -38,13 +38,10 @@ public class Book {
     )
     private List<Author> authors = new ArrayList<>();
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Edition> editions = new ArrayList<>();
-
     @OneToOne(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private Rating rating;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
             name = "book_subjects",
             joinColumns = @JoinColumn(name = "book_id"),

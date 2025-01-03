@@ -58,4 +58,10 @@ public class AuthorWebController {
         restTemplate.postForObject("http://localhost:8080/api/authors/fetch/" + query, null, Void.class);
         return "redirect:/authors";
     }
+
+    @PostMapping("/delete/{key}")
+    public String deleteAuthor(@PathVariable String key) {
+        restTemplate.delete("http://localhost:8080/api/authors/" + key);
+        return "redirect:/authors";
+    }
 }

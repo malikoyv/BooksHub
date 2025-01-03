@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,15 +51,26 @@ public class BookService {
         return authorNames.stream()
                 .map(authorName -> db.getAuthors().findByName(authorName)
                         .orElseGet(() -> {
-                            // Create a new Author if not found
                             Author newAuthor = new Author();
-                            newAuthor.setName(authorName);
-                            // Save the new Author entity to the database
+
+                            if (!authorName.isBlank()) {
+                                newAuthor.setName(authorName);
+                                newAuthor.setKey(generateKey(authorName));
+                            } else {
+                                newAuthor.setName("Unknown");
+                                newAuthor.setKey(generateKey("Unknown"));
+                            }
+
                             return db.getAuthors().save(newAuthor);
                         }))
                 .collect(Collectors.toList());
     }
 
+    private String generateKey(String authorName) {
+        String sanitizedName = authorName.toLowerCase().replaceAll("[^a-z0-9]", "-").replaceAll("-+", "-");
+        String uniqueId = UUID.randomUUID().toString().substring(0, 8);
+        return sanitizedName + "-" + uniqueId;
+    }
 
     private void addSubjects(BookDto dto, Book bookEntity) {
         List<Subject> subjects = dto.subjects() != null

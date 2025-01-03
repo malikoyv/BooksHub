@@ -20,7 +20,7 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 1000)
+    @Column(nullable = false, length = 1000)
     private String name;
 
     @JsonIgnoreProperties({"books"})

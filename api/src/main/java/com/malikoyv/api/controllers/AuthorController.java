@@ -43,5 +43,10 @@ public class AuthorController {
     public void fetchAuthors(@PathVariable String query) {
         authorService.updateAuthorsFromOpenLibrary(query);
     }
+
+    @DeleteMapping("/{key}")
+    public void deleteAuthor(@PathVariable String key) {
+        authorService.deleteAuthor(key);
+    }
 }
 
