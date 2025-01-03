@@ -20,7 +20,7 @@ public class UpdaterJob implements IUpdaterJob {
         this.ratingService = ratingService;
     }
 
-    @Scheduled(cron = "0 */1 * * * ?") // Run every hour at 30 minutes
+    @Scheduled(cron = "0 */2 * * * ?") // Run every 5 minutes
     @Transactional
     public void updateBooks() {
         System.out.println("Updating books from Open Library...");
@@ -28,7 +28,7 @@ public class UpdaterJob implements IUpdaterJob {
         System.out.println("Books update completed.");
     }
 
-    @Scheduled(cron = "0 */30 * * * ?") // Run every 30 minutes
+    @Scheduled(cron = "0 */5 * * * ?") // Run every 5 minutes
     @Transactional
     public void updateRating() {
         System.out.println("Updating ratings for all books...");

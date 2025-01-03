@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Main Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .hero {
+            background-image: url('https://via.placeholder.com/1920x500/007bff/ffffff?text=Welcome+to+Your+Library');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+
+        .container {
+            margin-top: -50px;
+        }
+
+        .card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: #007bff;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        footer {
+            background-color: #007bff;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        footer a {
+            color: #f8d7da;
+            text-decoration: underline;
+        }
+
+        footer a:hover {
+            color: #ffccd5;
+        }
+    </style>
+</head>
+<body>
+
+<header class="hero">
+    <h1>Welcome to BooksHub</h1>
+    <p>Manage your books, authors, and subjects seamlessly with an elegant interface.</p>
+    <a href="/books" class="btn btn-primary btn-lg">Explore Books</a>
+</header>
+
+<div class="container">
+    <div class="row text-center">
+        <div class="col-md-4 mb-4">
+            <div class="card p-4">
+                <i class="fas fa-book fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Books</h5>
+                <p class="card-text">View and manage all your books, create new entries, and keep track of ratings.</p>
+                <a href="/books" class="btn btn-primary">Go to Books</a>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card p-4">
+                <i class="fas fa-user fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Authors</h5>
+                <p class="card-text">Explore your favorite authors, add new ones, and manage their details.</p>
+                <a href="/authors" class="btn btn-primary">Go to Authors</a>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card p-4">
+                <i class="fas fa-tags fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Subjects</h5>
+                <p class="card-text">Organize books by subjects, create new categories, and streamline your library.</p>
+                <a href="/subjects" class="btn btn-primary">Go to Subjects</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>BooksHub &copy; 2025 | Developed by <a href="https://github.com/malikoyv">Yehor Malikov</a></p>
+</footer>
+</body>
+</html>

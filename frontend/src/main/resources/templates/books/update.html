@@ -65,7 +65,7 @@
         <div class="form-group">
             <label for="authors">Authors</label>
             <select id="authors" th:field="*{authors}" multiple class="form-control">
-                <option th:each="author : ${allAuthors}" th:value="${author.key}" th:text="${author.name}"></option>
+                <option th:each="author : ${allAuthors}" th:value="${author.name}" th:text="${author.name}"></option>
             </select>
             <button type="button" onclick="openAuthorCreation()" class="btn btn-secondary btn-sm mt-2">Create New Author</button>
         </div>

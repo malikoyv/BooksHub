@@ -11,6 +11,9 @@ import com.malikoyv.client.contract.BookDto;
 import com.malikoyv.core.model.Subject;
 import com.malikoyv.core.repositories.ICatalogData;
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,16 +27,15 @@ public class BookService {
     private final BookMapper bookMapper;
     private final RatingService ratingService;
     private final ICatalogData db;
-    private final AuthorService authorService;
 
-    public BookService(IBooksClient booksClient, BookMapper bookMapper, RatingService ratingService, ICatalogData db, AuthorService authorService) {
+    public BookService(IBooksClient booksClient, BookMapper bookMapper, RatingService ratingService, ICatalogData db) {
         this.booksClient = booksClient;
         this.bookMapper = bookMapper;
         this.ratingService = ratingService;
         this.db = db;
-        this.authorService = authorService;
     }
 
+    @CachePut(value = "books", key = "#dto.key()")
     public long saveBook(BookDto dto) {
         var bookEntity = new Book();
         bookEntity.setTitle(dto.title());
@@ -91,10 +93,12 @@ public class BookService {
         bookEntity.setSubjects(subjects);
     }
 
+    @Cacheable(value = "books", key = "#key")
     public BookDto getBook(String key) {
         return toDto(db.getBooks().findByKey(key));
     }
 
+    @Cacheable(value = "booksList")
     public List<BookDto> getAllBooks() {
         return db.getBooks().findAll().stream().map(this::toDto).collect(Collectors.toList());
     }
@@ -112,10 +116,12 @@ public class BookService {
     }
 
     @Transactional
+    @CacheEvict(value = "books", key = "#key")
     public void deleteBook(String key) {
         db.getBooks().deleteByKey(key);
     }
 
+    @CacheEvict(value = {"booksList"}, allEntries = true)
     public void updateBooksFromOpenLibrary(String query) {
         BookPagedResultDto response = booksClient.searchBooks(query, 1);
 
