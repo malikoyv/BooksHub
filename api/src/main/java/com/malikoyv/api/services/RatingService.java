@@ -12,6 +12,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class RatingService {
 
@@ -39,7 +41,13 @@ public class RatingService {
     @Transactional
     public void updateRatingByBookKey(String key) {
         try {
-            Book book = db.getBooks().findByKey(key);
+            Optional<Book> bookOptional = db.getBooks().findByKey(key);
+
+            if (bookOptional.isEmpty()) {
+                return;
+            }
+
+            Book book = bookOptional.get();
 
             String[] keyParts = book.getKey().split("/");
             String bookKey;

@@ -1,7 +1,8 @@
 package com.malikoyv.api.services;
 
+import com.malikoyv.api.exceptions.BookAlreadyExistsException;
+import com.malikoyv.api.exceptions.BookNotFoundException;
 import com.malikoyv.client.IBooksClient;
-import com.malikoyv.client.contract.AuthorDto;
 import com.malikoyv.client.contract.BookPagedResultDto;
 import com.malikoyv.client.contract.RatingDto;
 import com.malikoyv.client.mappers.BookMapper;
@@ -11,11 +12,14 @@ import com.malikoyv.client.contract.BookDto;
 import com.malikoyv.core.model.Subject;
 import com.malikoyv.core.repositories.ICatalogData;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,6 +31,7 @@ public class BookService {
     private final BookMapper bookMapper;
     private final RatingService ratingService;
     private final ICatalogData db;
+    private static final Logger logger = LoggerFactory.getLogger(BookService.class);
 
     public BookService(IBooksClient booksClient, BookMapper bookMapper, RatingService ratingService, ICatalogData db) {
         this.booksClient = booksClient;
@@ -37,9 +42,21 @@ public class BookService {
 
     @CachePut(value = "books", key = "#dto.key()")
     public long saveBook(BookDto dto) {
+        logger.info("Saving book with title: {}", dto.title());
         var bookEntity = new Book();
         bookEntity.setTitle(dto.title());
+
+        if (db.getBooks().findByKey(dto.key()).isPresent()) {
+            throw new BookAlreadyExistsException("Book already exists with key: " + dto.key());
+        }
+
         bookEntity.setKey(dto.key());
+
+        int firstPublishDate = Integer.parseInt(dto.firstPublishDate());
+        if (firstPublishDate < 0 || firstPublishDate > LocalDate.now().getYear()) {
+            throw new IllegalArgumentException("First publish date is invalid.");
+        }
+
         bookEntity.setPublishDate(Integer.parseInt(dto.firstPublishDate()));
         bookEntity.setAuthors(addAuthors(dto.authors()));
 
@@ -95,7 +112,10 @@ public class BookService {
 
     @Cacheable(value = "books", key = "#key")
     public BookDto getBook(String key) {
-        return toDto(db.getBooks().findByKey(key));
+        logger.info("Fetching book with key: {}", key);
+        return db.getBooks().findByKey(key)
+                .map(this::toDto)
+                .orElseThrow(() -> new BookNotFoundException("Book not found with key: " + key));
     }
 
     @Cacheable(value = "booksList")
@@ -104,9 +124,23 @@ public class BookService {
     }
 
     public void updateBook(String key, BookDto dto) {
-        var book = db.getBooks().findByKey(key);
+        var bookOptional = db.getBooks().findByKey(key);
+        if (bookOptional.isEmpty()) {
+            throw new BookNotFoundException("Book not found with key: " + key);
+        }
+        Book book = bookOptional.get();
         book.setTitle(dto.title());
-        book.setPublishDate(Integer.parseInt(dto.firstPublishDate()));
+
+        int firstPublishDate = Integer.parseInt(dto.firstPublishDate() != null ? dto.firstPublishDate() : "0");
+        if (firstPublishDate < 0 || firstPublishDate > LocalDate.now().getYear()) {
+            throw new IllegalArgumentException("First publish date is invalid.");
+        }
+        book.setPublishDate(firstPublishDate);
+
+        if (db.getBooks().findByKey(dto.key()).isPresent()) {
+            throw new BookAlreadyExistsException("Book already exists with key: " + dto.key());
+        }
+
         book.setKey(dto.key());
 
         book.setAuthors(addAuthors(dto.authors()));
@@ -129,7 +163,7 @@ public class BookService {
             List<BookDto> books = response.books();
             for (BookDto dto : books) {
                 String key = bookMapper.extractKey(dto.key());
-                Optional<Book> existingBookOptional = Optional.ofNullable(db.getBooks().findByKey(key));
+                Optional<Book> existingBookOptional = db.getBooks().findByKey(key);
                 Book book;
 
                 if (existingBookOptional.isPresent()) {

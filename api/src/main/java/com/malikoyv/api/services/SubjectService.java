@@ -16,6 +16,14 @@ public class SubjectService {
     }
 
     public long saveSubject(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Subject name cannot be null or empty.");
+        }
+
+        if (db.getSubjects().findByName(name).isPresent()) {
+            throw new IllegalArgumentException("Subject already exists with name: " + name);
+        }
+
         Subject subject = new Subject(name);
         db.getSubjects().save(subject);
         return subject.getId();
