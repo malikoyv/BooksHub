@@ -1,4 +1,4 @@
-package com.malikoyv.client.controller;
+package com.malikoyv.client.controllers;
 
 import com.malikoyv.api.controllers.BookController;
 import com.malikoyv.api.services.BookService;

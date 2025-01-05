@@ -1,4 +1,4 @@
-package com.malikoyv.client.controller;
+package com.malikoyv.client.controllers;
 
 import com.malikoyv.api.controllers.AuthorController;
 import com.malikoyv.client.contract.AuthorDto;
