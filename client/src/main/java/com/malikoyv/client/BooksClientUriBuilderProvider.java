@@ -35,14 +35,6 @@ public class BooksClientUriBuilderProvider implements IBooksClientUriBuilderProv
     }
 
     @Override
-    public String buildEditionDetailsUrl(String workKey) {
-        return builder()
-                .pathSegment("works")
-                .pathSegment(workKey + ".json")
-                .toUriString();
-    }
-
-    @Override
     public String buildRatingsUrl(String bookKey) {
         return builder()
                 .pathSegment("works")

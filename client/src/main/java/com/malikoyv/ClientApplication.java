@@ -1,9 +1,6 @@
 package com.malikoyv;
 
 import com.malikoyv.client.IBooksClient;
-import com.malikoyv.client.contract.AuthorSearchResponse;
-import com.malikoyv.client.contract.EditionDto;
-import com.malikoyv.client.contract.BookPagedResultDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

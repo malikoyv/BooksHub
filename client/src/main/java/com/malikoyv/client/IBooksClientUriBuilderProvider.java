@@ -5,7 +5,5 @@ public interface IBooksClientUriBuilderProvider {
 
     String buildAuthorSearchUrl(String authorName);
 
-    String buildEditionDetailsUrl(String workKey);
-
     String buildRatingsUrl(String bookKey);
 }

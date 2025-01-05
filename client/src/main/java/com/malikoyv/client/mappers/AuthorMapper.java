@@ -47,10 +47,10 @@ public class AuthorMapper implements IMapper<AuthorDto, Author> {
             return null;
         }
 
-        // Check if the date string is a four-digit year
+        // check if the date string is a four digit year
         if (dateString.matches("\\d{4}")) {
             int year = Integer.parseInt(dateString);
-            // Default to January 1st of the extracted year
+            // default to January 1st of the extracted year
             return LocalDate.of(year, 1, 1);
         }
 

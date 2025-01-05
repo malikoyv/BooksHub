@@ -2,6 +2,7 @@ package com.malikoyv.core.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Author {
 
     @Id
@@ -45,4 +47,8 @@ public class Author {
 
     @ManyToMany(mappedBy = "authors")
     private List<Book> books = new ArrayList<>();
+
+    public Author(String author1) {
+        name = author1;
+    }
 }
