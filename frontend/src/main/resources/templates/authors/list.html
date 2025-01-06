@@ -103,7 +103,9 @@
             <td th:text="${author.deathDate}"></td>
             <td>
                 <a th:href="@{/authors/{key}/update(key=${author.key})}" class="btn btn-info btn-sm">Update</a>
-                <a th:href="@{/authors/{key}/delete(key=${author.key})}" class="btn btn-danger btn-sm">Delete</a>
+                <form th:action="@{/authors/delete/{key}(key=${author.key})}" th:object="${author}" method="post">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
             </td>
         </tr>
         </tbody>

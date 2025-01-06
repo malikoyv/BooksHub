@@ -60,11 +60,6 @@
     <h1 class="mb-4">Books</h1>
     <a href="/books/create" class="btn btn-primary mb-3">Create New Book</a>
 
-    <div class="mb-3 d-flex align-items-center">
-        <input type="text" id="fetch" class="form-control narrow-input mr-2" placeholder="Enter title to fetch books">
-        <button onclick="fetchBooks()" class="btn btn-secondary btn-sm">Fetch</button>
-    </div>
-
     <table class="table table-striped">
         <thead>
         <tr>
@@ -112,15 +107,6 @@
 </div>
 
 <script>
-    function fetchBooks() {
-        const query = document.getElementById('fetch').value;
-        if (query.trim() !== "") {
-            window.location.href = `/books/fetch/${query}`;
-        } else {
-            alert('Please enter a title to fetch books.');
-        }
-    }
-
     function toggleAuthors(button) {
         const authorsList = button.previousElementSibling;
         const hiddenAuthors = authorsList.querySelectorAll('li.hidden');

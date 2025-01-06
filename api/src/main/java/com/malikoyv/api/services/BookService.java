@@ -110,7 +110,7 @@ public class BookService {
         bookEntity.setSubjects(subjects);
     }
 
-    @Cacheable(value = "books", key = "#key")
+//    @Cacheable(value = "books", key = "#key")
     public BookDto getBook(String key) {
         logger.info("Fetching book with key: {}", key);
         return db.getBooks().findByKey(key)
@@ -118,7 +118,7 @@ public class BookService {
                 .orElseThrow(() -> new BookNotFoundException("Book not found with key: " + key));
     }
 
-    @Cacheable(value = "booksList")
+//    @Cacheable(value = "booksList", unless = "#result.isEmpty()")
     public List<BookDto> getAllBooks() {
         return db.getBooks().findAll().stream().map(this::toDto).collect(Collectors.toList());
     }
@@ -136,10 +136,6 @@ public class BookService {
             throw new IllegalArgumentException("First publish date is invalid.");
         }
         book.setPublishDate(firstPublishDate);
-
-        if (db.getBooks().findByKey(dto.key()).isPresent()) {
-            throw new BookAlreadyExistsException("Book already exists with key: " + dto.key());
-        }
 
         book.setKey(dto.key());
 

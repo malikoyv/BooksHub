@@ -24,7 +24,7 @@ public class Subject {
     private String name;
 
     @JsonIgnoreProperties({"books"})
-    @ManyToMany(mappedBy = "subjects")
+    @ManyToMany(mappedBy = "subjects", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Book> books = new ArrayList<>();
 

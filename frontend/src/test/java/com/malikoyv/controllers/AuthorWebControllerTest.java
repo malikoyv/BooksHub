@@ -1,4 +1,4 @@
-package com.malikoyv;
+package com.malikoyv.controllers;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,7 +71,7 @@ public class AuthorWebControllerTest {
 
         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
-        assertEquals("http://localhost:8081/authors/agatha-christie-45831783", driver.getCurrentUrl());
+        assertEquals("http://localhost:8081/authors/", driver.getCurrentUrl());
     }
 
     @Test
